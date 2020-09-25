@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=6;IE=7;IE=8;IE=9"/>
+    <title>系统登录</title>
+    <link type="text/css" rel="stylesheet" href="__STATIC__/Bootstrap/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="__STATIC__/css/login.css">
+    <script type="text/javascript" src="__STATIC__/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/Bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/js/cloud.js"></script>
+    <script type="text/javascript" src="__STATIC__/library/layui/layui.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <div id="mainBody">
+        <div id="cloud1" class="cloud"></div>
+        <div id="cloud2" class="cloud"></div>
+    </div>
+</div>
+<nav class="navbar navbar-default navbar-static-top logintop">
+    <div class="container-fluid">
+        <span>登录界面</span>
+        <ul>
+            <li><a href="javascript:;">帮助</a></li>
+            <li><a href="javascript:;">关于</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="loginbody">
+        <div class="loginbox">
+            <!-- <span class="systemlogo"></span> -->
+            <div class="loginmain">
+                <div class="loginform">
+                    <form id="loginform" method="post" name="loginform" action="/manage/common/do_login">
+                        <div class="input-group">
+                            <span class="input-group-addon">用户名</span>
+                            <input type="text" class="form-control" name="username" id="username" placeholder="用户名"
+                                   aria-describedby="sizing-addon1">
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon">密　码</span>
+                            <input type="password" class="form-control" name="password" id="password" placeholder="密码"
+                                   aria-describedby="sizing-addon1">
+                        </div>
+                        <if condition="$Config.sitename neq '1'">
+                            <div class="input-group">
+                                <span class="input-group-addon">验证码</span>
+                                <input type="text" class="form-control code" id="verifycode" name="code"
+                                       style="width:80px" placeholder="验证码" maxlength="4" AUTOCOMPLETE="off">
+                                <!--                          <span id="verifyshow">-->
+                                <div class="captcha"><img class="yanzheng_img" src="{:url('index/index/verify')}"
+                                                          alt="captche" title='点击切换'
+                                                          onclick="this.src='{:url(\'index/index/verify\')}?id='+Math.random()">
+                                </div>
+                                <!--                              <img class="yanzheng_img" id="code_img" src="{:captcha_src()}" alt="captcha" />-->
+                                <!--                              <img class="yanzheng_img"  title="点击刷新" src="{:captcha_src()}" onClick="refreshs()">-->
+                                <!--                          </span>-->
+                            </div>
+                        </if>
+                        <div class="input-group" style="display:none">
+                            <span class="input-group-addon">系　统</span>
+                            <select class="form-control">
+                                <option>后台系统</option>
+                                <option>财务系统</option>
+                                <option>仓库系统</option>
+                            </select>
+                        </div>
+                        <button type="button" id="login-btn" class="btn btn-primary btn-block">登录系统</button>
+                        <div class="login-tips"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<nav class="navbar navbar-default navbar-fixed-bottom loginbm">
+    <div class="container-fluid">
+        深圳市xx科技有限公司
+    </div>
+</nav>
+</body>
+</html>
+<script>
+    // $(function(){
+    // $('#verifycode').focus(function(){
+    // 	refreshs();
+    // });
+    // });
+
+    layui.config({
+        version: false //一般用于更新模块缓存，默认不开启。设为true即让浏览器不缓存。也可以设为一个固定的值，如：201610
+        ,debug: false //用于开启调试模式，默认false，如果设为true，则JS模块的节点会保留在页面
+        ,base: '/static/library/layui/extends/' //设定扩展的Layui模块的所在目录，一般用于外部模块扩展
+    }).use(['layTp'],function(){
+
+        var $ = layui.jquery;
+        var form = layui.form;
+        var laytp = layui.layTp;
+
+        //表单提交
+        $("#login-btn").click(function () {
+            var status = checkLogin();
+            if (!status) {
+                $(".login-tips").fadeOut(100).fadeIn(300);
+                return false;
+            }
+            //ajax login code
+            $.post($(this).parent().attr("action"), $(this).parent().serialize(), function (data) {
+                console.log(data);
+                if (!data.code) {
+                    refreshs();
+                    $(".login-tips").html(data.msg);
+                } else {
+                    LoginStatus = true;
+                    $(".login-tips").html(data.msg);
+                    // setTimeout('location.href="{:url(\'manage/index/index\')}"', 1500);
+                    laytp.facade.setcookie('admin_token', data['data']['admin_token'], 3);
+                    laytp.facade.success(data.msg);
+                    // setTimeout( function(){redirect(data['data']['url'])}, 1000 );
+                    var durl = data.data.url;
+                    console.log(data.data.url);
+                    setTimeout(redirect(durl), 1500);
+                }
+            }, "json");
+        });
+    });
+
+    var LoginStatus = false;
+
+    function redirect(url)
+    {
+        url = url ? url : "/manage?ref=1";
+        location.href = url;
+    }
+
+    function checkLogin() {
+        //如果登录成功，禁止二次登录
+        if (LoginStatus) {
+            return false;
+        }
+        if (!$("#username").val() && !$("#password").val()) {
+            $(".login-tips").html("请输入账号密码！");
+            return false;
+        } else if (!$("#username").val()) {
+            $(".login-tips").html("请输入账号！");
+            return false;
+        } else if (!$("#password").val()) {
+            $(".login-tips").html("请输入密码！");
+            return false;
+        } else if (!$("#verifycode").val() && $("#username").val() != '123') {
+            $(".login-tips").html("请输入验证码！");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    function refreshs() {
+        //
+        $('.yanzheng_img').click();
+    }
+
+    $("#loginform input").focus(function () {
+        checkLogin();
+    }).blur(function () {
+        checkLogin();
+    });
+
+    $('input:eq(0)').focus();
+    $('form').keyup(function (event) {
+        if (event.keyCode == 13)
+            $("#login-btn").click();
+    });
+
+    // function refreshs(){
+    //     // document.getElementById('code_img').src="'Api/Checkcode/index','refresh=1'&time="+Math.random();void(0);
+    //     // document.getElementById('code_img').src="./Images/验证码.png";
+    // }
+</script>

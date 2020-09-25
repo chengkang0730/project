@@ -1,0 +1,58 @@
+{
+    "name": "topthink/think",
+    "description": "blog project",
+    "type": "project",
+    "keywords": [
+        "framework",
+        "thinkphp",
+        "ORM"
+    ],
+    "homepage": "http://thinkphp.cn/",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "liu21st",
+            "email": "liu21st@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0",
+        "topthink/framework": "5.1.*",
+        "topthink/think-captcha": "^2.0",
+        "monolog/monolog": "^1.24"
+            },
+    "autoload": {
+        "psr-4": {
+            "app\\": "application"
+        }
+    },
+    "extra": {
+        "think-path": "thinkphp"
+    },
+    "config": {
+        "preferred-install": "dist"
+    },
+    "scripts": {
+        "build": [
+            "cp .env.example .env",
+            "mkdir runtime",
+            "mkdir runtime/log",
+            "mkdir runtime/temp",
+            "chmod -R 777 runtime",
+            "composer install"
+        ],
+        "deploy": [
+            "rm -rf .git",
+            "mkdir runtime",
+            "mkdir runtime/log",
+            "mkdir runtime/temp",
+            "mkdir public/static/file",
+            "chmod -R 0777 public/static",
+            "chmod -R 0777 runtime",
+            "composer install --ignore-platform-reqs"
+        ],
+        "clear": [
+            "rm -rf runtime/*"
+        ]
+    }
+}

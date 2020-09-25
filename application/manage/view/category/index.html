@@ -1,0 +1,61 @@
+{extend name="admin@public/layout/main"}
+
+{block name="search_form"}
+<div class="search-form-page-tab-content" id="search-form" style="display:none;">
+    <form class="layui-form" lay-filter="laytp_search_form" style="margin-bottom:0px;">
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label" title="ID">ID</label>
+            <div class="layui-input-inline">
+                <input type="text" id="id" name="search_param[id][value]" placeholder="请输入ID" class="layui-input">
+                <input type="hidden" name="search_param[id][condition]" value="=">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label" title="ID">栏目名称</label>
+            <div class="layui-input-inline">
+                <input type="text" id="name" name="search_param[name][value]" placeholder="栏目名称" class="layui-input">
+                <input type="hidden" name="search_param[name][condition]" value="LIKE">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label" title="文件类型">所属模型</label>
+            <div class="layui-input-inline">
+                <select id="model_id" name="search_param[model_id][value]" placeholder="请选择模型">
+                    <option value="0">显示全部</option>
+                    {foreach $model_select as $ke=>$v}
+                    <option value="{$v.id}">{$v.name}</option>
+                    {/foreach}
+                </select>
+                <input type="hidden" name="search_param[model_id][condition]" value="=">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label" title="文件类型">导航显示</label>
+            <div class="layui-input-inline">
+                <select id="is_menu" name="search_param[is_menu][value]" placeholder="请选择模型">
+                    <option value="">显示全部</option>
+                    <option value="1">显示</option>
+                    <option value="0">不显示</option>
+                </select>
+                <input type="hidden" name="search_param[is_menu][condition]" value="=">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <button class="layui-btn layui-btn-sm layui-btn-normal" lay-submit lay-filter="laytp"><i class="layui-icon"></i> 搜 索</button>
+        </div>
+    </form>
+</div>
+{/block}
+
+{block name="script"}
+<script src="__MANAGE_JS__/category.js" charset="utf-8"></script>
+{/block}
+
+{block name="js_template"}
+{include file="public/js_tpl/toolbar_tpl"}
+{include file="public/js_tpl/operation_tpl"}
+{/block}

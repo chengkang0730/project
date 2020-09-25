@@ -1,0 +1,97 @@
+{extend name="admin@public/layout/popup_form"}
+
+{block name="form"}
+<div class="layui-tab-item layui-show">
+    <div class="layui-form-item">
+        <label class="layui-form-label">选择模型</label>
+        <div class="layui-input-inline input-custom-width">
+            <select name="model_id" lay-verify="required" lay-filter="model_select">
+                <option value=""></option>
+                {foreach $model_select as $key=>$vo}
+                <option value="{$vo['id']}">{$vo.name}</option>
+                {/foreach}
+            </select>
+
+        </div>
+        <div class="layui-form-mid layui-word-aux">模型创建后不可修改</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">上级栏目</label>
+        <div class="layui-input-block input-custom-width select-parent-id" style="width: 180px">
+            <select name="pid" lay-verify="required">
+                <option value="0">作为一级栏目</option>
+                {foreach $category_select as $ke=>$cs}
+                <option value="{$cs['id']}">{$cs.name}</option>
+                {/foreach}
+
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">栏目名称</label>
+        <div class="layui-input-block input-custom-width">
+            <input type="text" name="name" required lay-verify="required" placeholder="请输入栏目名称"
+                   autocomplete="off" class="layui-input" style="width: 180px">
+        </div>
+    </div>
+    <div class="layui-form-item category_url" style="display: none">
+        <label class="layui-form-label">外部链接</label>
+        <div class="layui-input-inline input-custom-width">
+            <input type="text" name="url" placeholder="请输入外部链接" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">链接需http://或https://开头</div>
+    </div>
+    <!--<div class="layui-form-item">
+        <label class="layui-form-label">栏目图片</label>
+        <div class="layui-input-inline input-custom-width">
+            <input type="text" name="image_url" value=""  placeholder="" class="layui-input">
+            <button type="button" class="layui-btn layui-upload-button" id="image">
+                <i class="layui-icon">&#xe67c;</i>上传图片
+            </button>
+        </div>
+
+    </div>-->
+    <div class="layui-form-item layui-form-text" style="width: 330px">
+        <label class="layui-form-label">栏目描述</label>
+        <div class="layui-input-block input-custom-width" style="width: 330px">
+            <textarea name="description" placeholder="请输入栏目描述" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序</label>
+        <div class="layui-input-inline input-custom-width">
+            <input type="number" name="sort" required autocomplete="off" class="layui-input" value="20">
+        </div>
+        <div class="layui-form-mid layui-word-aux">值越小越靠前</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">是否显示</label>
+        <div class="layui-input-block">
+            <input type="radio" name="is_menu" value="1" title="是" checked>
+            <input type="radio" name="is_menu" value="0" title="否">
+        </div>
+    </div>
+</div>
+<div class="layui-tab-item">
+    <div class="layui-form-item">
+        <label class="layui-form-label">封面页模版</label>
+        <div class="layui-input-block input-custom-width">
+            <input type="text" name="index_template"  placeholder="请输入封面页模版" autocomplete="off" class="layui-input" value="index">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">列表页模版</label>
+        <div class="layui-input-block input-custom-width">
+            <input type="text" name="list_template"  placeholder="请输入列表页模版" autocomplete="off" class="layui-input" value="lists">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">详情页模版</label>
+        <div class="layui-input-block input-custom-width">
+            <input type="text" name="show_template"  placeholder="请输入详情页模版" autocomplete="off" class="layui-input" value="show">
+        </div>
+    </div>
+
+</div>
+
+{/block}
